@@ -1,0 +1,26 @@
+[build]
+# The index HTML file to drive the bundling process
+target = "index.html"
+
+# The output directory for the build
+dist = "public/pkg"
+
+# The public URL from which assets are served
+public_url = "/pkg/"
+
+# Build in release mode by default
+release = false
+
+[watch]
+# Paths to watch for changes
+watch = ["crates/ui/src"]
+
+[serve]
+# The address to serve on
+address = "127.0.0.1"
+
+# The port to serve on
+port = 8080
+
+# Don't open browser automatically
+open = false

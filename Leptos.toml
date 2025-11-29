@@ -1,0 +1,42 @@
+# Leptos configuration file for TinyStore
+
+[package]
+# The name used by wasm-bindgen/cargo-leptos for the JS/WASM bundle
+name = "tinystore"
+
+# The site root folder is where cargo-leptos generate all output
+site-root = "public"
+
+# The site-root relative folder where all compiled output (JS, WASM and CSS) is written
+site-pkg-dir = "pkg"
+
+# Assets source dir (files copied to site-root)
+assets-dir = "public"
+
+# The IP and port (ex: 127.0.0.1:3000) where the server serves the content
+site-addr = "0.0.0.0:9000"
+
+# The port to use for automatic reload monitoring
+reload-port = 3001
+
+# [Optional] Command to use when running end-to-end tests
+end2end-cmd = "npx playwright test"
+end2end-dir = "end2end"
+
+# The browserlist query used for optimizing the CSS
+browserquery = "defaults"
+
+# The environment Leptos will run in, usually `DEV` or `PROD`
+env = "DEV"
+
+# The features to use when compiling the bin target
+bin-features = []
+
+# The features to use when compiling the lib target
+lib-features = ["hydrate"]
+
+# The default features for the project
+lib-default-features = false
+
+# The profile to use for the lib target when compiling for release
+lib-profile-release = "release"

@@ -30,6 +30,7 @@ struct MultipartUpload {
 }
 
 /// Filesystem-based storage backend
+#[derive(Clone)]
 pub struct FilesystemBackend {
     data_dir: PathBuf,
     multipart_uploads: Arc<RwLock<HashMap<String, MultipartUpload>>>,
