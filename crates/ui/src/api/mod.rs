@@ -2,9 +2,5 @@
 
 pub mod client;
 
-// TODO: Add server functions in Step 7-8
-// Example:
-// #[server(ListBuckets, "/api")]
-// pub async fn list_buckets() -> Result<Vec<BucketInfo>, ServerFnError> {
-//     // Implementation
-// }
+// Server functions will be added in Step 8
+// For Step 7, we're focusing on the basic Leptos UI setup

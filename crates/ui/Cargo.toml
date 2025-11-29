@@ -47,6 +47,14 @@ optional = true
 workspace = true
 optional = true
 
+[dependencies.tinystore-storage]
+workspace = true
+optional = true
+
+[dependencies.tinystore-auth]
+workspace = true
+optional = true
+
 [features]
 default = ["csr"]
 
@@ -78,4 +86,6 @@ ssr = [
     "dep:tokio",
     "dep:tower",
     "dep:tower-http",
+    "dep:tinystore-storage",
+    "dep:tinystore-auth",
 ]

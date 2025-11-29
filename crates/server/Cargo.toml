@@ -33,6 +33,7 @@ clap = { workspace = true }
 config = { workspace = true }
 dotenvy = { workspace = true }
 serde = { workspace = true }
+serde_yaml = "0.9"
 
 # Logging
 tracing = { workspace = true }

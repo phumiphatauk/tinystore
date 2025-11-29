@@ -1,7 +1,9 @@
 //! UI components
 
-// TODO: Add components in Step 7-8
-// pub mod layout;
-// pub mod navbar;
-// pub mod sidebar;
-// etc.
+pub mod layout;
+pub mod navbar;
+pub mod sidebar;
+
+pub use layout::Layout;
+pub use navbar::Navbar;
+pub use sidebar::Sidebar;
