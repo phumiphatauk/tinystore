@@ -1,7 +1,7 @@
 //! API request and response types for UI
 
 use serde::{Deserialize, Serialize};
-use crate::{BucketInfo, BucketStats, ObjectInfo};
+use crate::{BucketInfo, ObjectInfo};
 
 /// Response for listing buckets
 #[derive(Debug, Clone, Serialize, Deserialize)]
