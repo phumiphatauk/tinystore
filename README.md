@@ -69,8 +69,8 @@ auth:
 This project is currently under active development. The workspace structure is complete, and we're implementing features step by step:
 
 - [x] Step 1: Workspace structure setup
-- [ ] Step 2: Shared types implementation
-- [ ] Step 3: Storage backend implementation
+- [x] Step 2: Shared types implementation
+- [x] Step 3: Storage backend implementation
 - [ ] Step 4: S3 API handlers
 - [ ] Step 5: Authentication
 - [ ] Step 6: Error handling
