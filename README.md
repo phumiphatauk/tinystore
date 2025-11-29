@@ -77,7 +77,7 @@ This project is currently under active development. The workspace structure is c
 - [x] Step 7: Leptos UI setup
 - [x] Step 8: UI pages implementation
 - [x] Step 9: Testing
-- [ ] Step 10: Docker and documentation
+- [x] Step 10: Docker and documentation
 
 ## Project Structure
 
@@ -94,6 +94,12 @@ tinystore/
 ├── tests/            # Integration and compatibility tests
 └── public/           # Static assets for UI
 ```
+
+## Documentation
+
+- **[API Documentation](docs/API.md)** - Complete API reference with examples
+- **[Deployment Guide](docs/DEPLOYMENT.md)** - Production deployment instructions
+- **[Usage Examples](docs/EXAMPLES.md)** - SDK examples for Python, JavaScript, Go, and more
 
 ## Supported S3 Operations
 
