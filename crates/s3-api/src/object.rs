@@ -11,6 +11,7 @@ use std::collections::HashMap;
 use std::sync::Arc;
 use tinystore_shared::ObjectMetadata;
 use tinystore_storage::{ListObjectsParams, StorageBackend};
+use tracing::{debug, info};
 
 use crate::error::S3Result;
 use crate::xml::{ListBucketResult, ObjectXml};

@@ -73,7 +73,7 @@ This project is currently under active development. The workspace structure is c
 - [x] Step 3: Storage backend implementation
 - [x] Step 4: S3 API handlers
 - [x] Step 5: Authentication (AWS Signature V4)
-- [ ] Step 6: Error handling
+- [x] Step 6: Error handling
 - [ ] Step 7: Leptos UI setup
 - [ ] Step 8: UI pages implementation
 - [ ] Step 9: Testing

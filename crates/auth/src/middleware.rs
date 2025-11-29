@@ -1,6 +1,6 @@
 //! Axum middleware for authentication
 
-use crate::{CredentialStore, SignatureV4};
+use crate::{AuthError, CredentialStore, SignatureV4};
 use axum::{
     body::Body,
     extract::Request,
@@ -9,7 +9,7 @@ use axum::{
     response::Response,
 };
 use std::collections::HashMap;
-use tracing::{debug, warn};
+use tracing::{debug, error, warn};
 
 const DEFAULT_REGION: &str = "us-east-1";
 
@@ -61,14 +61,14 @@ impl AuthLayer {
         let auth_header = match headers.get("authorization") {
             Some(h) => match h.to_str() {
                 Ok(s) => s,
-                Err(_) => {
-                    warn!("Invalid authorization header encoding");
-                    return Err(StatusCode::FORBIDDEN);
+                Err(e) => {
+                    error!("Invalid authorization header encoding: {}", e);
+                    return Err(StatusCode::BAD_REQUEST);
                 }
             },
             None => {
                 warn!("Missing authorization header");
-                return Err(StatusCode::FORBIDDEN);
+                return Err(StatusCode::UNAUTHORIZED);
             }
         };
 
@@ -77,7 +77,7 @@ impl AuthLayer {
             Ok(key) => key,
             Err(e) => {
                 warn!("Failed to extract access key: {}", e);
-                return Err(StatusCode::FORBIDDEN);
+                return Err(StatusCode::BAD_REQUEST);
             }
         };
 
@@ -121,8 +121,9 @@ impl AuthLayer {
                 Err(StatusCode::FORBIDDEN)
             }
             Err(e) => {
-                warn!("Error verifying signature: {}", e);
-                Err(StatusCode::FORBIDDEN)
+                error!("Error verifying signature: {} (code: {})", e, e.s3_code());
+                // Map auth error to appropriate HTTP status code
+                Err(StatusCode::from_u16(e.status_code()).unwrap_or(StatusCode::FORBIDDEN))
             }
         }
     }

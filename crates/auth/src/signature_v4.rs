@@ -1,9 +1,11 @@
 //! AWS Signature Version 4 implementation
 
+use crate::error::{AuthError, AuthResult};
 use chrono::{DateTime, Utc};
 use hmac::{Hmac, Mac};
 use sha2::{Digest, Sha256};
 use std::collections::HashMap;
+use tracing::{debug, trace};
 
 type HmacSha256 = Hmac<Sha256>;
 
@@ -25,7 +27,7 @@ impl SignatureV4 {
         payload_hash: &str,
         timestamp: DateTime<Utc>,
         region: &str,
-    ) -> Result<String, Box<dyn std::error::Error>> {
+    ) -> AuthResult<String> {
         // Step 1: Create canonical request
         let canonical_request = Self::create_canonical_request(
             method,
@@ -76,23 +78,26 @@ impl SignatureV4 {
         payload_hash: &str,
         secret_key: &str,
         region: &str,
-    ) -> Result<bool, Box<dyn std::error::Error>> {
+    ) -> AuthResult<bool> {
         // Parse authorization header
+        trace!("Parsing authorization header");
         let parts = Self::parse_authorization_header(authorization_header)?;
-        let credential = parts.get("Credential").ok_or("Missing Credential")?;
-        let provided_signature = parts.get("Signature").ok_or("Missing Signature")?;
+        let credential = parts.get("Credential").ok_or(AuthError::MissingCredential)?;
+        let provided_signature = parts.get("Signature")
+            .ok_or_else(|| AuthError::InvalidAuthorizationHeader("Missing Signature".to_string()))?;
 
         // Extract date from credential scope
         let credential_parts: Vec<&str> = credential.split('/').collect();
         if credential_parts.len() < 2 {
-            return Err("Invalid credential format".into());
+            return Err(AuthError::InvalidCredentialFormat(credential.to_string()));
         }
         let date_stamp = credential_parts[1];
 
         // Parse timestamp from date stamp
-        let timestamp = chrono::NaiveDate::parse_from_str(date_stamp, "%Y%m%d")?
+        let timestamp = chrono::NaiveDate::parse_from_str(date_stamp, "%Y%m%d")
+            .map_err(|e| AuthError::InvalidDateFormat(e.to_string()))?
             .and_hms_opt(0, 0, 0)
-            .ok_or("Invalid date")?
+            .ok_or_else(|| AuthError::InvalidDateFormat(date_stamp.to_string()))?
             .and_utc();
 
         // Calculate expected signature
@@ -117,7 +122,14 @@ impl SignatureV4 {
 
         let expected_signature = Self::calculate_signature_value(secret_key, date_stamp, region, &string_to_sign)?;
 
-        Ok(expected_signature == *provided_signature)
+        let is_valid = expected_signature == *provided_signature;
+        if is_valid {
+            debug!("Signature verified successfully");
+        } else {
+            debug!("Signature verification failed");
+        }
+
+        Ok(is_valid)
     }
 
     /// Calculate SHA256 hash of payload
@@ -226,7 +238,7 @@ impl SignatureV4 {
         date_stamp: &str,
         region: &str,
         string_to_sign: &str,
-    ) -> Result<String, Box<dyn std::error::Error>> {
+    ) -> AuthResult<String> {
         let k_secret = format!("AWS4{}", secret_key);
         let k_date = Self::hmac_sha256(k_secret.as_bytes(), date_stamp.as_bytes())?;
         let k_region = Self::hmac_sha256(&k_date, region.as_bytes())?;
@@ -238,14 +250,14 @@ impl SignatureV4 {
     }
 
     /// Calculate HMAC-SHA256
-    fn hmac_sha256(key: &[u8], data: &[u8]) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
+    fn hmac_sha256(key: &[u8], data: &[u8]) -> AuthResult<Vec<u8>> {
         let mut mac = HmacSha256::new_from_slice(key)?;
         mac.update(data);
         Ok(mac.finalize().into_bytes().to_vec())
     }
 
     /// Parse authorization header
-    fn parse_authorization_header(header: &str) -> Result<HashMap<String, String>, Box<dyn std::error::Error>> {
+    fn parse_authorization_header(header: &str) -> AuthResult<HashMap<String, String>> {
         let mut parts = HashMap::new();
 
         // Remove "AWS4-HMAC-SHA256 " prefix
