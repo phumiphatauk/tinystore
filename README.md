@@ -75,7 +75,7 @@ This project is currently under active development. The workspace structure is c
 - [x] Step 5: Authentication (AWS Signature V4)
 - [x] Step 6: Error handling
 - [x] Step 7: Leptos UI setup
-- [ ] Step 8: UI pages implementation
+- [x] Step 8: UI pages implementation
 - [ ] Step 9: Testing
 - [ ] Step 10: Docker and documentation
 
