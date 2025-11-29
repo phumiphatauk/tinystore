@@ -7,6 +7,7 @@ members = [
     "crates/s3-api",
     "crates/ui",
     "crates/server",
+    "tests",
 ]
 
 [workspace.package]
