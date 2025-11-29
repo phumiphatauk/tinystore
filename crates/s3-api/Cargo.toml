@@ -42,3 +42,6 @@ thiserror = { workspace = true }
 
 # Logging
 tracing = { workspace = true }
+
+# Hashing
+md5 = "0.7"
