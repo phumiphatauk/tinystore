@@ -7,6 +7,7 @@ use axum::{
 };
 use std::sync::Arc;
 use tinystore_storage::StorageBackend;
+use tracing::{debug, info};
 
 use crate::error::S3Result;
 use crate::xml::{BucketXml, Buckets, ListAllMyBucketsResult, Owner};
@@ -19,7 +20,9 @@ pub async fn create_bucket<B>(
 where
     B: StorageBackend,
 {
+    info!("S3 API: CreateBucket request for bucket: {}", bucket);
     backend.create_bucket(&bucket).await?;
+    debug!("S3 API: CreateBucket succeeded for bucket: {}", bucket);
     Ok(StatusCode::OK)
 }
 
@@ -31,7 +34,9 @@ pub async fn delete_bucket<B>(
 where
     B: StorageBackend,
 {
+    info!("S3 API: DeleteBucket request for bucket: {}", bucket);
     backend.delete_bucket(&bucket).await?;
+    debug!("S3 API: DeleteBucket succeeded for bucket: {}", bucket);
     Ok(StatusCode::NO_CONTENT)
 }
 
@@ -42,6 +47,7 @@ pub async fn list_buckets<B>(
 where
     B: StorageBackend,
 {
+    debug!("S3 API: ListBuckets request");
     let buckets = backend.list_buckets().await?;
 
     let response = ListAllMyBucketsResult {

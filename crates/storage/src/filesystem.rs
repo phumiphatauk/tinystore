@@ -11,6 +11,7 @@ use tokio::fs;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::sync::RwLock;
 use tinystore_shared::{BucketInfo, ObjectInfo, ObjectMetadata, StorageError, StorageResult};
+use tracing::{debug, error, info, warn};
 
 use crate::backend::{
     StorageBackend, ListObjectsParams, GetObjectResult, PutObjectResult,
