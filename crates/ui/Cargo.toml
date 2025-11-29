@@ -22,9 +22,14 @@ leptos_router = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 
+# HTTP client (for CSR)
+gloo-net = { version = "0.4", features = ["http"] }
+
 # WASM compatibility
 console_error_panic_hook = { version = "0.1", optional = true }
 wasm-bindgen = { version = "0.2", optional = true }
+web-sys = { version = "0.3", features = ["Window", "Storage", "HtmlInputElement", "FileReader", "FileList", "File", "ProgressEvent"] }
+js-sys = "0.3"
 
 # Server-side dependencies
 [dependencies.leptos_axum]
