@@ -1,0 +1,81 @@
+[package]
+name = "tinystore-ui"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+# Internal dependencies
+tinystore-shared = { workspace = true }
+
+# Leptos
+leptos = { workspace = true }
+leptos_meta = { workspace = true }
+leptos_router = { workspace = true }
+
+# Serialization
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+# WASM compatibility
+console_error_panic_hook = { version = "0.1", optional = true }
+wasm-bindgen = { version = "0.2", optional = true }
+
+# Server-side dependencies
+[dependencies.leptos_axum]
+workspace = true
+optional = true
+
+[dependencies.axum]
+workspace = true
+optional = true
+
+[dependencies.tokio]
+workspace = true
+optional = true
+
+[dependencies.tower]
+workspace = true
+optional = true
+
+[dependencies.tower-http]
+workspace = true
+optional = true
+
+[features]
+default = ["csr"]
+
+# Client-side rendering (for development)
+csr = [
+    "leptos/csr",
+    "leptos_meta/csr",
+    "leptos_router/csr",
+    "dep:console_error_panic_hook",
+    "dep:wasm-bindgen",
+]
+
+# Hydration mode (production)
+hydrate = [
+    "leptos/hydrate",
+    "leptos_meta/hydrate",
+    "leptos_router/hydrate",
+    "dep:console_error_panic_hook",
+    "dep:wasm-bindgen",
+]
+
+# Server-side rendering
+ssr = [
+    "leptos/ssr",
+    "leptos_meta/ssr",
+    "leptos_router/ssr",
+    "dep:leptos_axum",
+    "dep:axum",
+    "dep:tokio",
+    "dep:tower",
+    "dep:tower-http",
+]

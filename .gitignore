@@ -1,1 +1,42 @@
+# Rust
 /target
+Cargo.lock
+**/*.rs.bk
+*.pdb
+
+# Leptos
+/target/site
+/pkg
+/dist
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment
+.env
+.env.local
+
+# Data
+/data
+
+# Logs
+*.log
+
+# Node (for Tailwind/frontend tooling)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Build artifacts
+*.wasm
+*.js.map
+
+# Test artifacts
+end2end/test-results/
+end2end/playwright-report/
+end2end/playwright/.cache/

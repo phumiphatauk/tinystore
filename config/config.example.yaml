@@ -1,0 +1,56 @@
+# TinyStore Configuration Example
+
+server:
+  host: "0.0.0.0"
+  port: 9000
+  # Optional: Unix socket path (alternative to TCP)
+  # socket: "/var/run/tinystore.sock"
+
+storage:
+  backend: "filesystem"  # filesystem, memory
+  data_dir: "./data"
+  # Maximum object size (default: 5GB)
+  max_object_size: "5GB"
+
+auth:
+  enabled: true
+  # Default credentials (change in production!)
+  credentials:
+    - access_key: "tinystore"
+      secret_key: "tinystore123"
+      admin: true
+    - access_key: "readonly"
+      secret_key: "readonly123"
+      admin: false
+      # Optional: restrict to specific buckets
+      # allowed_buckets: ["public-bucket"]
+
+region: "us-east-1"
+
+ui:
+  enabled: true
+  # Path prefix for UI (default: /ui)
+  path: "/ui"
+
+logging:
+  level: "info"  # trace, debug, info, warn, error
+  format: "pretty"  # json, pretty
+  # Optional: log to file
+  # file: "/var/log/tinystore.log"
+
+limits:
+  max_bucket_count: 100
+  max_keys_per_list: 1000
+  max_multipart_parts: 10000
+  # Request size limit
+  max_request_size: "100MB"
+
+# Optional: Enable metrics endpoint
+metrics:
+  enabled: false
+  path: "/metrics"
+
+# Optional: TLS configuration
+# tls:
+#   cert: "/path/to/cert.pem"
+#   key: "/path/to/key.pem"

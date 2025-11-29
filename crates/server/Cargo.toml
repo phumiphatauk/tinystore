@@ -1,0 +1,45 @@
+[package]
+name = "tinystore"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "tinystore"
+path = "src/main.rs"
+
+[dependencies]
+# Internal dependencies
+tinystore-shared = { workspace = true }
+tinystore-storage = { workspace = true }
+tinystore-auth = { workspace = true }
+tinystore-s3-api = { workspace = true }
+tinystore-ui = { workspace = true, features = ["ssr"] }
+
+# Web framework
+axum = { workspace = true }
+tower = { workspace = true }
+tower-http = { workspace = true }
+leptos = { workspace = true }
+leptos_axum = { workspace = true }
+
+# Async runtime
+tokio = { workspace = true }
+
+# Configuration
+clap = { workspace = true }
+config = { workspace = true }
+dotenvy = { workspace = true }
+serde = { workspace = true }
+
+# Logging
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+
+# Error handling
+anyhow = { workspace = true }
+
+[features]
+default = []

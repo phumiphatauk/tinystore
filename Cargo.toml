@@ -1,6 +1,83 @@
-[package]
-name = "tinystore"
-version = "0.1.0"
-edition = "2024"
+[workspace]
+resolver = "2"
+members = [
+    "crates/shared",
+    "crates/storage",
+    "crates/auth",
+    "crates/s3-api",
+    "crates/ui",
+    "crates/server",
+]
 
-[dependencies]
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["phumiphatauk"]
+license = "MIT"
+repository = "https://github.com/phumiphatauk/tinystore"
+
+[workspace.dependencies]
+# Shared dependencies
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+thiserror = "1.0"
+anyhow = "1.0"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Async runtime
+tokio = { version = "1", features = ["full"] }
+async-trait = "0.1"
+futures = "0.3"
+
+# Web backend
+axum = { version = "0.7", features = ["multipart", "macros"] }
+axum-extra = { version = "0.9", features = ["typed-header"] }
+tower = "0.4"
+tower-http = { version = "0.5", features = ["cors", "fs", "trace", "compression-gzip"] }
+hyper = { version = "1.0", features = ["full"] }
+http = "1.0"
+http-body-util = "0.1"
+
+# Leptos - Full-stack Rust web framework
+leptos = { version = "0.6" }
+leptos_axum = { version = "0.6" }
+leptos_router = { version = "0.6" }
+leptos_meta = { version = "0.6" }
+
+# Storage & cryptography
+bytes = "1"
+md-5 = "0.10"
+sha2 = "0.10"
+hex = "0.4"
+hmac = "0.12"
+uuid = { version = "1", features = ["v4", "serde"] }
+base64 = "0.22"
+
+# XML processing
+quick-xml = { version = "0.31", features = ["serialize"] }
+
+# Configuration & CLI
+config = "0.14"
+clap = { version = "4", features = ["derive", "env"] }
+dotenvy = "0.15"
+
+# Internal crates
+tinystore-shared = { path = "crates/shared" }
+tinystore-storage = { path = "crates/storage" }
+tinystore-auth = { path = "crates/auth" }
+tinystore-s3-api = { path = "crates/s3-api" }
+tinystore-ui = { path = "crates/ui" }
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true
+
+[profile.dev]
+opt-level = 0
+
+[profile.dev.package."*"]
+opt-level = 3
