@@ -1,0 +1,28 @@
+# Leptos build configuration
+
+[workspace]
+members = ["crates/server"]
+
+[package]
+name = "tinystore"
+bin-package = "tinystore"
+lib-package = "tinystore-ui"
+site-root = "target/site"
+site-pkg-dir = "pkg"
+style-file = "style/main.scss"
+tailwind-input-file = "style/tailwind.css"
+tailwind-config-file = "tailwind.config.js"
+assets-dir = "public"
+site-addr = "0.0.0.0:9000"
+reload-port = 3001
+browserquery = "defaults"
+watch = false
+env = "DEV"
+
+[end2end]
+dir = "end2end"
+
+# Features for different build modes
+[[workspace.members.bin-features]]
+name = "ssr"
+default = true
