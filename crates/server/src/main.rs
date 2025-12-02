@@ -4,6 +4,7 @@ mod config;
 mod cli;
 mod state;
 mod ui_router;
+mod api;
 
 use anyhow::Result;
 use axum::Router;
@@ -61,12 +62,26 @@ async fn main() -> Result<()> {
             // Create application state
             let app_state = AppState::new(storage.clone(), credentials.clone());
 
+            // Create API state with start time tracking
+            let api_state = api::ApiState {
+                storage: storage.clone(),
+                credentials: credentials.clone(),
+                start_time: std::time::Instant::now(),
+            };
+
             // Create S3 API router
             let s3_router = create_s3_router(storage.clone());
             info!("S3 API router initialized");
 
+            // Create JSON API router
+            let api_router = api::create_api_router(api_state);
+            info!("JSON API router initialized");
+
             // Build the main application router
             let app = Router::new();
+
+            // Add JSON API routes
+            let app = app.nest("/api/v1", api_router);
 
             // Add S3 API routes
             let app = app.nest("/", s3_router);
@@ -74,7 +89,7 @@ async fn main() -> Result<()> {
             // Add UI routes if enabled
             let app = if !no_ui {
                 info!("Web UI enabled at /ui");
-                app.nest("/ui", ui_router::create_ui_router(app_state))
+                app.nest("/ui", ui_router::create_ui_router(app_state).await)
                     .nest_service("/pkg", ServeDir::new("public/pkg"))
                     .nest_service("/assets", ServeDir::new("public/assets"))
             } else {

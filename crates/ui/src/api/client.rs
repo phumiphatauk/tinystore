@@ -83,62 +83,62 @@ pub async fn put(url: &str, body: Vec<u8>) -> Result<(), String> {
 
 /// Fetches server status
 pub async fn fetch_server_status() -> Result<ServerStatus, String> {
-    get("/api/status").await
+    get("/api/v1/status").await
 }
 
 /// Fetches storage statistics
 pub async fn fetch_storage_stats() -> Result<StorageStats, String> {
-    get("/api/stats").await
+    get("/api/v1/stats").await
 }
 
 /// Fetches the list of buckets
 pub async fn fetch_buckets() -> Result<ListBucketsResponse, String> {
-    get("/api/buckets").await
+    get("/api/v1/buckets").await
 }
 
 /// Creates a new bucket
 pub async fn create_bucket(name: String) -> Result<(), String> {
     let req = CreateBucketRequest { name };
-    post::<_, ()>("/api/buckets", &req).await
+    post::<_, ()>("/api/v1/buckets", &req).await
 }
 
 /// Deletes a bucket
 pub async fn delete_bucket(name: &str) -> Result<(), String> {
-    delete(&format!("/api/buckets/{}", name)).await
+    delete(&format!("/api/v1/buckets/{}", name)).await
 }
 
 /// Fetches objects in a bucket
 pub async fn fetch_objects(bucket: &str, prefix: Option<&str>) -> Result<ListObjectsResponse, String> {
     let url = if let Some(p) = prefix {
-        format!("/api/buckets/{}/objects?prefix={}", bucket, p)
+        format!("/api/v1/buckets/{}/objects?prefix={}", bucket, p)
     } else {
-        format!("/api/buckets/{}/objects", bucket)
+        format!("/api/v1/buckets/{}/objects", bucket)
     };
     get(&url).await
 }
 
 /// Uploads an object to a bucket
 pub async fn upload_object(bucket: &str, key: &str, data: Vec<u8>) -> Result<(), String> {
-    let url = format!("/api/buckets/{}/objects/{}", bucket, key);
+    let url = format!("/api/v1/buckets/{}/objects/{}", bucket, key);
     put(&url, data).await
 }
 
 /// Deletes an object from a bucket
 pub async fn delete_object(bucket: &str, key: &str) -> Result<(), String> {
-    delete(&format!("/api/buckets/{}/objects/{}", bucket, key)).await
+    delete(&format!("/api/v1/buckets/{}/objects/{}", bucket, key)).await
 }
 
 /// Fetches list of credentials
 pub async fn fetch_credentials() -> Result<Vec<CredentialInfo>, String> {
-    get("/api/credentials").await
+    get("/api/v1/credentials").await
 }
 
 /// Creates a new credential
 pub async fn create_credential(req: CreateCredentialRequest) -> Result<(), String> {
-    post::<_, ()>("/api/credentials", &req).await
+    post::<_, ()>("/api/v1/credentials", &req).await
 }
 
 /// Deletes a credential
 pub async fn delete_credential(id: &str) -> Result<(), String> {
-    delete(&format!("/api/credentials/{}", id)).await
+    delete(&format!("/api/v1/credentials/{}", id)).await
 }

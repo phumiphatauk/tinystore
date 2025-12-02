@@ -42,5 +42,11 @@ tracing-subscriber = { workspace = true }
 # Error handling
 anyhow = { workspace = true }
 
+# Hashing
+md5 = "0.7"
+
+# UUID generation
+uuid = { workspace = true }
+
 [features]
 default = []

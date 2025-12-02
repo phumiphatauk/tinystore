@@ -226,6 +226,49 @@ where
     ))
 }
 
+/// Delete multiple objects (POST /{bucket}?delete)
+pub async fn delete_objects<B>(
+    State(backend): State<Arc<B>>,
+    Path(bucket): Path<String>,
+    body: Bytes,
+) -> S3Result<impl IntoResponse>
+where
+    B: StorageBackend,
+{
+    // Parse the XML request
+    let keys = crate::xml::parse_delete_objects(&body)
+        .map_err(|e| tinystore_shared::StorageError::SerializationError(e.to_string()))?;
+
+    let mut deleted = Vec::new();
+    let mut errors = Vec::new();
+
+    for key in keys {
+        match backend.delete_object(&bucket, &key).await {
+            Ok(_) => {
+                deleted.push(crate::xml::DeletedObject { key });
+            }
+            Err(e) => {
+                errors.push(crate::xml::DeleteError {
+                    key,
+                    code: e.s3_code().to_string(),
+                    message: e.to_string(),
+                });
+            }
+        }
+    }
+
+    let response = crate::xml::DeleteResult { deleted, errors };
+
+    let xml_body = crate::xml::to_xml_string(&response)
+        .map_err(|e| tinystore_shared::StorageError::SerializationError(e.to_string()))?;
+
+    Ok((
+        StatusCode::OK,
+        [(header::CONTENT_TYPE, "application/xml")],
+        xml_body,
+    ))
+}
+
 /// Copy an object implementation
 async fn copy_object_impl<B>(
     backend: Arc<B>,

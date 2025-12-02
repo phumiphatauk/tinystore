@@ -86,3 +86,30 @@ where
         Err(tinystore_shared::StorageError::BucketNotFound(bucket).into())
     }
 }
+
+/// Get bucket location (GET /{bucket}?location)
+pub async fn get_bucket_location<B>(
+    State(backend): State<Arc<B>>,
+    Path(bucket): Path<String>,
+) -> S3Result<impl IntoResponse>
+where
+    B: StorageBackend,
+{
+    // Check if bucket exists
+    if !backend.bucket_exists(&bucket).await? {
+        return Err(tinystore_shared::StorageError::BucketNotFound(bucket).into());
+    }
+
+    let response = crate::xml::LocationConstraint {
+        location: "us-east-1".to_string(),
+    };
+
+    let xml_body = crate::xml::to_xml_string(&response)
+        .map_err(|e| tinystore_shared::StorageError::SerializationError(e.to_string()))?;
+
+    Ok((
+        StatusCode::OK,
+        [("Content-Type", "application/xml")],
+        xml_body,
+    ))
+}
