@@ -70,9 +70,30 @@ pub struct Config {
 }
 
 impl Config {
-    /// Load configuration from file or environment
-    pub fn load() -> Result<Self, config::ConfigError> {
-        // TODO: Implement configuration loading in later steps
-        Ok(Self::default())
+    /// Load configuration from file with environment variable overrides
+    pub fn load(path: Option<&std::path::Path>) -> Result<Self, config::ConfigError> {
+        let mut config = if let Some(p) = path {
+            let content = std::fs::read_to_string(p)
+                .map_err(|e| config::ConfigError::Message(e.to_string()))?;
+            serde_yaml::from_str(&content)
+                .map_err(|e| config::ConfigError::Message(e.to_string()))?
+        } else {
+            Config::default()
+        };
+
+        // Apply environment variable overrides
+        if let Ok(host) = std::env::var("TINYSTORE_HOST") {
+            config.server.host = host;
+        }
+        if let Ok(port) = std::env::var("TINYSTORE_PORT") {
+            if let Ok(p) = port.parse() {
+                config.server.port = p;
+            }
+        }
+        if let Ok(data_dir) = std::env::var("TINYSTORE_DATA_DIR") {
+            config.storage.data_dir = std::path::PathBuf::from(data_dir);
+        }
+
+        Ok(config)
     }
 }

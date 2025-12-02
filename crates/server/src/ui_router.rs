@@ -8,18 +8,12 @@ use tinystore_storage::FilesystemBackend;
 use crate::state::AppState;
 
 /// Create the UI router with Leptos SSR
-pub fn create_ui_router(app_state: AppState<FilesystemBackend>) -> Router {
-    // Build Leptos options manually
-    let leptos_options = LeptosOptions::builder()
-        .output_name("tinystore")
-        .site_pkg_dir("pkg")
-        .site_root("public")
-        .build();
+pub async fn create_ui_router(app_state: AppState<FilesystemBackend>) -> Router {
+    // Get Leptos configuration
+    let conf = get_configuration(None).await.expect("Failed to get Leptos configuration");
+    let leptos_options = conf.leptos_options;
 
     let routes = generate_route_list(App);
-
-    // Provide app state to Leptos context
-    let leptos_options_clone = leptos_options.clone();
 
     Router::new()
         .leptos_routes_with_context(
@@ -30,5 +24,5 @@ pub fn create_ui_router(app_state: AppState<FilesystemBackend>) -> Router {
             },
             App,
         )
-        .with_state(leptos_options_clone)
+        .with_state(leptos_options)
 }
